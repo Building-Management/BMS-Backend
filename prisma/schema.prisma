@@ -1,0 +1,111 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Admin {
+  id             Int    @id @default(autoincrement())
+  name           String @db.VarChar(255)
+  email          String @unique(map: "email") @db.VarChar(255)
+  phone_number   Int    @map("phone number")
+  address        String @db.VarChar(255)
+  account_number Int    @map("account number")
+  password       String @db.VarChar(255)
+  role           String @db.VarChar(30)
+  status         String @db.VarChar(50) @default("active")
+}
+
+model Freelancer {
+  id               Int    @id @default(autoincrement())
+  name             String @db.VarChar(255)
+  email            String @unique(map: "freelancer_email") @db.VarChar(255)
+  phone_number     String @map("phone number") @db.VarChar(20)
+  self_description String @map("self description") @db.VarChar(255)
+  rating           Int
+  comment          String @db.VarChar(255)
+  image_url        String @map("image url") @db.VarChar(255)
+  portfolio_url    String @map("portfolio url") @db.VarChar(255)
+  password         String @db.VarChar(255)
+  role             String @db.VarChar(30)
+  status           String @db.VarChar(50) @default("active")
+}
+
+model Rentee {
+  id            Int             @id @default(autoincrement())
+  name          String          @db.VarChar(255)
+  email         String          @unique(map: "rentee_email") @db.VarChar(255)
+  phone_number  Int             @map("phone number")
+  kebele_url    String          @map("kebele url") @db.VarChar(255)
+  contract_url  String          @map("contract url") @db.VarChar(60)
+  password      String          @db.VarChar(255)
+  role          String          @db.VarChar(30)
+  status        String          @db.VarChar(50) @default("active")
+
+  jobs          Job[]
+  NoticeRequest NoticeRequest[]
+  payment       Payment[]
+  notices       Notice[]        @relation("NoticeToRentee")
+}
+
+model Block {
+  id            Int             @id @default(autoincrement())
+  block_status  String          @map("block status") @db.VarChar(255)
+  jobs          Job[]
+  NoticeRequest NoticeRequest[]
+  payment       Payment[]
+  notices       Notice[]        @relation("BlockToNotice")
+}
+
+model Job {
+  job_id          Int     @id @default(autoincrement())
+  job_description String  @db.VarChar(255)
+  status          String  @db.VarChar(255)
+  date            String  @db.VarChar(50)
+  rentee_id       Int?
+  block_id        Int?
+  block           Block?  @relation(fields: [block_id], references: [id])
+  rentee          Rentee? @relation(fields: [rentee_id], references: [id])
+
+  @@index([block_id], map: "Job_block_id_fkey")
+  @@index([rentee_id], map: "Job_rentee_id_fkey")
+}
+
+model Payment {
+  id           Int     @id @default(autoincrement())
+  rent_price   String  @db.VarChar(255)
+  payment_date String  @db.VarChar(255)
+  rentee_id    Int?
+  block_id     Int?
+  block        Block?  @relation(fields: [block_id], references: [id])
+  rentee       Rentee? @relation(fields: [rentee_id], references: [id])
+
+  @@index([block_id], map: "Payment_block_id_fkey")
+  @@index([rentee_id], map: "Payment_rentee_id_fkey")
+}
+
+model Notice {
+  id            Int             @id @default(autoincrement())
+  issue         String          @db.VarChar(2000)
+  notice_date   String          @db.VarChar(255)
+  NoticeRequest NoticeRequest[]
+  blocks        Block[]         @relation("BlockToNotice")
+  rentees       Rentee[]        @relation("NoticeToRentee")
+}
+
+model NoticeRequest {
+  id       Int    @id @default(autoincrement())
+  noticeId Int
+  renteeId Int
+  block_id Int
+  block    Block  @relation(fields: [block_id], references: [id])
+  notice   Notice @relation(fields: [noticeId], references: [id])
+  rentee   Rentee @relation(fields: [renteeId], references: [id])
+
+  @@index([block_id], map: "NoticeRequest_block_id_fkey")
+  @@index([noticeId], map: "NoticeRequest_noticeId_fkey")
+  @@index([renteeId], map: "NoticeRequest_renteeId_fkey")
+}
