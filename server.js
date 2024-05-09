@@ -14,10 +14,10 @@ app.use(express.json());
 
 // Define routes
 // Mount your user router with authorization middleware
-app.use('/api/admin', adminRouter); // Assuming your user router handles all user-related endpoints under the /api/users route
+app.use('/api/admin', authorize, adminRouter); // Assuming your user router handles all user-related endpoints under the /api/users route
 app.use('/api/auth', authRouter);
 app.use('/api/admin', jobRouter);
-app.use('/api/rentee', paymentRouter);
+app.use('/api/rentee', authorize, paymentRouter);
 
 
 // app.get('/', (req, res) => {
