@@ -5,6 +5,7 @@ const prisma = new PrismaClient()
 const adminRouter = require('./src/routers/admin/admin'); // Import your user router
 const authRouter = require('./src/routers/common/auth');
 const jobRouter = require('./src/routers/common/job');
+const paymentRouter = require('./src/routers/common/payment');
 const { authorize } = require('./src/middleware/authMiddleware'); // Import your authorization middleware
 
 
@@ -16,6 +17,8 @@ app.use(express.json());
 app.use('/api/admin', adminRouter); // Assuming your user router handles all user-related endpoints under the /api/users route
 app.use('/api/auth', authRouter);
 app.use('/api/admin', jobRouter);
+app.use('/api/rentee', paymentRouter);
+
 
 // app.get('/', (req, res) => {
 //     res.send('hello node abdi')

@@ -75,13 +75,15 @@ model Job {
 }
 
 model Payment {
-  id           Int     @id @default(autoincrement())
-  rent_price   String  @db.VarChar(255)
-  payment_date String  @db.VarChar(255)
-  rentee_id    Int?
-  block_id     Int?
-  block        Block?  @relation(fields: [block_id], references: [id])
-  rentee       Rentee? @relation(fields: [rentee_id], references: [id])
+  id                    Int     @id @default(autoincrement())
+  rent_price            String  @db.VarChar(255)
+  payment_status        String  @db.VarChar(200) @default("Pending")
+  payment_date          String  @db.VarChar(255)
+  txRef                 String  @db.VarChar(3000)
+  rentee_id             Int?
+  block_id              Int?
+  block                 Block?  @relation(fields: [block_id], references: [id])
+  rentee                Rentee? @relation(fields: [rentee_id], references: [id])
 
   @@index([block_id], map: "Payment_block_id_fkey")
   @@index([rentee_id], map: "Payment_rentee_id_fkey")
@@ -109,3 +111,4 @@ model NoticeRequest {
   @@index([noticeId], map: "NoticeRequest_noticeId_fkey")
   @@index([renteeId], map: "NoticeRequest_renteeId_fkey")
 }
+
