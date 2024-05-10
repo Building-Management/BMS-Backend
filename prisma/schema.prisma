@@ -63,7 +63,8 @@ model Contract  {
   id                Int             @id @default(autoincrement())
   start_date        String          @db.VarChar(255)
   end_date          String          @db.VarChar(255)
-  monthly_payment   Int             
+  monthly_payment   Int
+  status            String          @db.VarChar(255)@default("active")
   block_id          Int?            
   rentee_id         Int?            
   block             Block?  @relation(fields: [block_id], references: [id])

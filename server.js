@@ -6,6 +6,7 @@ const adminRouter = require('./src/routers/admin/admin'); // Import your user ro
 const authRouter = require('./src/routers/common/auth');
 const jobRouter = require('./src/routers/common/job');
 const paymentRouter = require('./src/routers/common/payment');
+const contractRouter = require('./src/routers/common/contract');
 const { authorize } = require('./src/middleware/authMiddleware'); // Import your authorization middleware
 
 
@@ -14,10 +15,11 @@ app.use(express.json());
 
 // Define routes
 // Mount your user router with authorization middleware
-app.use('/api/admin', authorize, adminRouter); // Assuming your user router handles all user-related endpoints under the /api/users route
+app.use('/api/admin', adminRouter); // Assuming your user router handles all user-related endpoints under the /api/users route
 app.use('/api/auth', authRouter);
 app.use('/api/admin', jobRouter);
-app.use('/api/rentee', authorize, paymentRouter);
+app.use('/api/rentee', paymentRouter);
+app.use('/api/contracts', contractRouter);
 
 
 // app.get('/', (req, res) => {

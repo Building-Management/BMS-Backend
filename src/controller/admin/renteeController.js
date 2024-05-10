@@ -23,7 +23,7 @@ exports.getAllUsers = async(req, res) => {
 
 // Controller function for creating a new user
 exports.createUser = async(req, res) => {
-    const { name, phone_number, email, password, kebele_url, contract_url, role } = req.body;
+    const { name, phone_number, email, password, kebele_url, role } = req.body;
 
     try {
         // Hash the password
@@ -31,7 +31,7 @@ exports.createUser = async(req, res) => {
 
         // Create user in the database with hashed password
         const newUser = await prisma.rentee.create({
-            data: { name, phone_number, email, password: hashedPassword, kebele_url, contract_url, role }
+            data: { name, phone_number, email, password: hashedPassword, kebele_url, role }
         });
 
         // Return newly created user as response
