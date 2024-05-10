@@ -43,9 +43,12 @@ exports.createPayment = async(req, res) => {
         // });
 
         // Extract rentee from the block's associated job
-        // const rentee = block.jobs[0] ? .rentee;
         const rentee = block.jobs[0] && block.jobs[0].rentee;
-
+        const contract = await prisma.Contract.findFirst({
+            where: {
+                block_id: blockId,
+            },
+        });
 
         if (!rentee) {
             throw new Error('Rentee not found for the block');
@@ -59,11 +62,10 @@ exports.createPayment = async(req, res) => {
 
 
         const order = {
-            rent_price: block.price,
+            rent_price: contract.monthly_payment,
             payment_date: formattedDate,
             txRef: txRef,
-            rentee_id: rentee.id,
-            block_id: block.id
+            contract_id: contract.id,
         };
 
 
@@ -75,7 +77,7 @@ exports.createPayment = async(req, res) => {
         let chapaRequestData = {
             first_name: rentee.name,
             email: rentee.email,
-            amount: block.price,
+            amount: contract.monthly_payment,
             tx_ref: txRef,
             currency: "ETB",
         };
