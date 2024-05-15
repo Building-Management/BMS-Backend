@@ -21,7 +21,7 @@ exports.createPayment = async(req, res) => {
         // });
 
         const block = await prisma.block.findUnique({
-            where: { id: blockId },
+            where: { id: parseInt(blockId) },
             include: {
                 jobs: {
                     include: {
@@ -46,7 +46,7 @@ exports.createPayment = async(req, res) => {
         const rentee = block.jobs[0] && block.jobs[0].rentee;
         const contract = await prisma.Contract.findFirst({
             where: {
-                block_id: blockId,
+                block_id: parseInt(blockId),
             },
         });
 
@@ -63,6 +63,7 @@ exports.createPayment = async(req, res) => {
 
         const order = {
             rent_price: contract.monthly_payment,
+            payment_status: "Pending",
             payment_date: formattedDate,
             txRef: txRef,
             contract_id: contract.id,
@@ -70,7 +71,9 @@ exports.createPayment = async(req, res) => {
 
 
         // creating our order
-        await Payment.create(order);
+        await prisma.Payment.create({
+            data: order,
+        });
 
         // building the chapa request with the necessary data's
         // note that additional fields can be set as well, like phoneNumber, email ...
@@ -116,8 +119,8 @@ exports.createPayment = async(req, res) => {
 
 exports.verifyPayment = async(req, res) => {
     try {
-        //validate that this was indeed sent by Chapa's server
-        // this is where we use the Secret hash we saved in .env
+        // //validate that this was indeed sent by Chapa's server
+        // // this is where we use the Secret hash we saved in .env
         const hash = crypto
             .createHmac("sha256", process.env.CHAPA_WEBHOOK_SECRET)
             .update(JSON.stringify(req.body))
@@ -143,25 +146,37 @@ exports.verifyPayment = async(req, res) => {
                     // if successful find the order
                     if (response.data["status"] == "success") {
                         let tx_ref = response.data["data"]["tx_ref"];
-                        const order = await OrderCollection.findOne({
-                            txRef: tx_ref,
+
+                        const pay = await prisma.Payment.findFirst({
+                            where: { txRef: tx_ref }
                         });
-                        // check if the order doesn't exist or payment status is not pending
-                        if (!order || order.paymentStatus != "pending") {
+
+
+                        let idp = pay.id
+                            // check if the order doesn't exist or payment status is not pending
+                        if (!pay || pay.payment_status != "Pending") {
+                            // Return a response to acknowledge receipt of the event
+                            console.log("a")
+                            return res.sendStatus(200);
+                        }
+
+                        if (pay.payment_status == "Pending") {
+                            const updatedPayment = await prisma.Payment.update({
+                                where: { id: idp },
+                                data: {
+                                    payment_status: "Completed"
+                                }
+                            });
                             // Return a response to acknowledge receipt of the event
                             return res.sendStatus(200);
                         }
-                        // change payment status to completed
-                        if (order.paymentStatus == "pending") {
-                            order.paymentStatus = "completed";
-                            await order.save();
-                            // Return a response to acknowledge receipt of the event
-                            return res.sendStatus(200);
-                        }
+
                     }
                 }
             }
         }
+        return res.sendStatus(200);
+
     } catch (err) {
         return res.status(500).json({ msg: err.message });
     }

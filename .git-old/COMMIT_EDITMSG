@@ -1,0 +1,15 @@
+contract controller and route is done also in the database schema the status is added for the contract model
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+#
+# On branch abdi
+# Your branch is up to date with 'origin/abdi'.
+#
+# Changes to be committed:
+#	new file:   prisma/migrations/20240510140715_status_added_to_contract_model/migration.sql
+#	modified:   prisma/schema.prisma
+#	modified:   server.js
+#	modified:   src/controller/admin/renteeController.js
+#	new file:   src/controller/common/contractController.js
+#	new file:   src/routers/common/contract.js
+#

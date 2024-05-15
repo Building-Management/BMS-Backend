@@ -89,8 +89,13 @@ model Job {
 
 model Payment {
   id                    Int       @id @default(autoincrement())
+<<<<<<< HEAD
   rent_price            String    @db.VarChar(255)
   payment_status        String    @db.VarChar(200) @default("Pending")
+=======
+  rent_price            Int       
+  payment_status        String    @db.VarChar(200)
+>>>>>>> f6e0047 (first commit after git is corrupted the payment is fully done also the contract is done)
   payment_date          String    @db.VarChar(255)
   txRef                 String    @db.VarChar(3000)
   contract_id           Int?

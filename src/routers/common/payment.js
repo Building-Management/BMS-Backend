@@ -7,7 +7,7 @@ const { authorize } = require('../../middleware/authMiddleware');
 
 
 //Route for the payment
-router.post('/payment', authorize('rentee'), paymentController.createPayment);
+router.post('/payment/:blockId', authorize('rentee'), paymentController.createPayment);
 
 router.post('/verifypayment', paymentController.verifyPayment);
 
