@@ -8,7 +8,7 @@ const bcrypt = require('bcrypt');
 exports.getAllUsers = async(req, res) => {
     try {
 
-        const { Id, email, role } = req.user;
+        // const { Id, email, role } = req.user;
 
         // Fetch all users from the database
         const users = await prisma.rentee.findMany();

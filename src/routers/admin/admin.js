@@ -10,8 +10,8 @@ const { authorize } = require('../../middleware/authMiddleware');
 router.post('/add', adminController.createUser);
 
 // Route for accessing user data (requires authentication)
-router.get('/', authorize('admin', 'manager'), renteeController.getAllUsers);
-
+// router.get('/', authorize('admin', 'manager'), renteeController.getAllUsers);
+router.get('/', renteeController.getAllUsers);
 // Route for adding a new user (requires specific role)
 router.post('/', authorize('admin'), renteeController.createUser);
 // router.post('/', renteeController.createUser);
