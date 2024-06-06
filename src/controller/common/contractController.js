@@ -11,6 +11,12 @@ exports.createContract = async(req, res) => {
             data: { start_date, end_date, monthly_payment, rentee_id, block_id }
         });
 
+        const updateBlockStatus = await prisma.block.update({
+            where: { id: parseInt(block_id) }, // Convert contractId to integer if it's a string
+            data: {
+                block_status: "active"
+            }
+        })
         // Return newly created contract as response
         res.status(201).json(newContract);
     } catch (error) {
@@ -64,6 +70,13 @@ exports.updateContract = async(req, res) => {
             where: { id: parseInt(contractId) }, // Convert contractId to integer if it's a string
             data: {
                 status: status_contract
+            }
+        });
+
+        const updatedblockStatus = await prisma.block.update({
+            where: { id: parseInt(block_id) }, // Convert contractId to integer if it's a string
+            data: {
+                block_status: "inactive"
             }
         });
 

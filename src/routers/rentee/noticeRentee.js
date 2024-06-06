@@ -6,3 +6,5 @@ const { authorize } = require('../../middleware/authMiddleware');
 // Route for user login
 router.post('/create-message', authorize('admin'), noticeRentee.createMessage);
 router.get('/{id}', authorize('rentee', 'admin'), noticeRentee.getMessage)
+
+module.exports = router;

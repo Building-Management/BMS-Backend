@@ -52,7 +52,8 @@ model Rentee {
 
 model Block {
   id            Int             @id @default(autoincrement())
-  block_status  String          @map("block status") @db.VarChar(255)
+  block_status  String          @map("block status") @db.VarChar(255) @default("inactive")
+  block_number  Int
   jobs          Job[]
   NoticeRequest NoticeRequest[]
   notices       Notice[]        @relation("BlockToNotice")
@@ -105,6 +106,7 @@ model Notice {
   id            Int             @id @default(autoincrement())
   issue         String          @db.VarChar(2000)
   notice_date   String          @db.VarChar(255)
+  status        string          @db.VarChar(255)
   NoticeRequest NoticeRequest[]
   blocks        Block[]         @relation("BlockToNotice")
   rentees       Rentee[]        @relation("NoticeToRentee")

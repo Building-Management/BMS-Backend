@@ -7,9 +7,15 @@ const authRouter = require('./src/routers/common/auth');
 const jobRouter = require('./src/routers/common/job');
 const paymentRouter = require('./src/routers/common/payment');
 const contractRouter = require('./src/routers/common/contract');
-const noticeAdminRouter = require('./src/routers/admin/noticeAdmin')
-const noticeRenteeRouter = require('./src/routers/rentee/noticeRentee')
+const noticeAdminRouter = require('./src/routers/admin/noticeAdmin');
+const noticeRenteeRouter = require('./src/routers/rentee/noticeRentee');
+const blockRouter = require('./src/routers/admin/block');
 const { authorize } = require('./src/middleware/authMiddleware'); // Import your authorization middleware
+
+const events = require('events');
+events.EventEmitter.defaultMaxListeners = 20; // or any number you find appropriate
+
+
 const cors = require('cors')
 
 // const corsOption = {
@@ -39,9 +45,9 @@ app.use('/api/auth', authRouter);
 app.use('/api/admin', jobRouter);
 app.use('/api/rentee', paymentRouter);
 app.use('/api/contracts', contractRouter);
-app.use('/api/admin', noticeAdminRouter)
-app.use('/api/rentee', noticeRenteeRouter)
-
+app.use('/api/admin/notice', noticeAdminRouter);
+app.use('/api/rentee/notice', noticeRenteeRouter);
+app.use('/api/block', blockRouter);
 
 // app.get('/', (req, res) => {
 //     res.send('hello node abdi')
